@@ -93,7 +93,7 @@ function commandSlots($message_channel, $message_author, $currency, $slot_icons,
 function commandDouble($message_channel, $message_author, $message_content, $currency) {
 	$message = explode(' ', $message_content);
 
-	$amount = (integer) $message[1];
+	$amount = $message[1];
 
 	if (empty($amount)) {
 		$message_builder = MessageBuilder::new()->setContent('Please enter how much you\'d like to attempt to double.');
@@ -115,6 +115,12 @@ function commandDouble($message_channel, $message_author, $message_content, $cur
 
 	foreach ($users as $user_record) {
     	if ($user_record->id == $message_author->user->id) {
+    		if ($amount === 'all') {
+				$amount = $user_record->balance;
+    		} else {
+    			$amount = (integer) $amount;
+    		}
+
     		if ($doubled) {
 				$user_record->balance = $user_record->balance + $amount;
 
