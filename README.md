@@ -1,0 +1,2 @@
+# MannBot
+A Discord Bot
