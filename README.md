@@ -14,8 +14,8 @@ A Discord Bot
 ### Add the bot to your Discord server
 This should generate the `users.json` file, which grabs all users within your server and assigns them defaults such as name, id, balance, xp and levels
 
-### Commands
+## Commands
 `!commands` - Generates an embed message showing all the commands 
 
-### License
+## License
 MIT License, © David Cole and other contributers 2016-present.
