@@ -1,0 +1,6 @@
+vendor
+composer.lock
+keys.php
+application.log
+/storage/thoughts/*
+users.json
