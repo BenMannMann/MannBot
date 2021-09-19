@@ -47,6 +47,8 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
                     'level' => 1,
                     'balance' => 1000,
                     'daily_bonus' => strtotime('now'),
+                    'caught' => 0,
+                    'jailed' => null,
                 ];
             }
 
@@ -81,6 +83,8 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
     //             'level' => 1,
     //             'balance' => 1000,
     //             'daily_bonus' => strtotime('now'),
+    //             'caught' => 0,
+    //             'jailed' => null,
     //         ];
     //     }
 
@@ -113,6 +117,8 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
     //             'level' => 1,
     //             'balance' => 1000,
     //             'daily_bonus' => strtotime('now'),
+    //             'caught' => 0,
+    //             'jailed' => null,
     //         ];
 
     //         file_put_contents(__DIR__ . '/users.json', json_encode($users));
