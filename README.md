@@ -11,8 +11,8 @@ A Discord Bot
 - `$slot_icons` Icons to use for the slot machine. You can use normal or custom emojis for this by passing in '<:emojiname:emojiid>'.
 - `$slot_winnings` How much the individual slot icons are worth.
 
-### Add the bot to your Discord server
-This should generate the `users.json` file, which grabs all users within your server and assigns them defaults such as name, id, balance, xp and levels
+### Add the bot to your Discord server and turn on
+Once the Bot is on, it should generate the `users.json` file. This will grab all the users within your server and assign them some default data such as name, id, balance, xp and levels.
 
 ## Commands
 `!commands` - Generates an embed message showing all the commands
