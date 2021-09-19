@@ -26,7 +26,7 @@ function commandCommands($message_channel, $currency, $bot_image) {
 			!blackjack -> Play Blackjack against the Dealer MannBot
 			!slots -> Play the completely-totally-not-rigged slots, 100 {$currency} a go!
 			!double {amount} -> Try your luck at doubling your money!
-			!steal {amount} {user} -> Try to steal some money from another user!
+			!steal {user} {amount} -> Try to steal some money from another user!
 			!leaderboard -> Check out the gambling leaderboard
 			!checkbalance -> Check your balance
 			!claimbonus -> Receive some {$currency} every 6 hours

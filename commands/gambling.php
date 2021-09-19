@@ -87,7 +87,7 @@ function commandSlots($message_channel, $message_author, $currency, $slot_icons,
  * 
  * @param string  $message_channel 	Channel to send the message to
  * @param string  $message_author 	Author of the message
- * @param string $message_content   Message that was passed through with the command
+ * @param string  $message_content   Message that was passed through with the command
  * @param string  $currency			Name of the currency
  */
 function commandDouble($message_channel, $message_author, $message_content, $currency) {
@@ -140,9 +140,79 @@ function commandDouble($message_channel, $message_author, $message_content, $cur
 
 /**
  * Try and steal another users balance
+ * 
+ * @param string  $message_channel 	Channel to send the message to
+ * @param string  $message_author 	Author of the message
+ * @param string  $message_content  Message that was passed through with the command
+ * @param string  $currency			Name of the currency
  */
-function commandSteal() {
+function commandSteal($message_channel, $message_author, $message_content, $currency) {
+	$message = explode(' ', $message_content);
 
+	$user = $message[1];
+
+	$user_id = str_replace(['<', '>', '@', '!'], '', $user);
+
+   	$amount = (integer) $message[2];
+
+   	if (empty($user)) {
+		$message_builder = MessageBuilder::new()->setContent('Please enter who to steal the currency from.');
+
+		$message_channel->sendMessage($message_builder);
+
+		return;
+   	} 
+
+	if (empty($amount)) {
+		$message_builder = MessageBuilder::new()->setContent('Please enter how much you\'d like to attempt to steal.');
+
+		$message_channel->sendMessage($message_builder);
+
+		return;
+   	}
+
+   	// Base chance to steal = 15%
+   	// @todo if user has a certain item, increase chances
+
+   	$stolen = false;
+
+   	$steal_attempt = rand(1, 100);
+
+   	$percentage = rand(22, 43);
+
+   	if ($steal_attempt <= 15) {
+   		$stolen = true;
+   	}
+
+	$users = json_decode(file_get_contents(dirname(__DIR__, 1) . '/users.json'));
+
+   	if ($stolen) {
+   		foreach ($users as $user_record) {
+    		if ($user_record->id == $message_author->user->id) {
+    			$user_record->balance = $user_record->balance + $amount;
+    		}
+
+    		if ($user_record->id == $user_id) {
+    			$user_record->balance = $user_record->balance - $amount;
+    		}
+    	}
+
+		$message_builder = MessageBuilder::new()->setContent("{$message_author} tried to steal {$amount} {$currency} from {$user} and succeded! Keep your pockets in check {$user}!");
+   	} else {
+   		foreach ($users as $user_record) {
+    		if ($user_record->id == $message_author->user->id) {
+    			$fine_amount = ceil(($percentage / 100) * $user_record->balance);
+
+    			$user_record->balance = $user_record->balance - $fine_amount;
+    		}
+    	}
+
+		$message_builder = MessageBuilder::new()->setContent("{$message_author} tried to steal {$amount} {$currency} from {$user} and failed! They have been arrested and made to pay {$percentage}% of their current balance (- {$fine_amount} {$currency}) in fines!");
+   	}
+
+	file_put_contents(dirname(__DIR__, 1) . '/users.json', json_encode($users));
+
+	$message_channel->sendMessage($message_builder);
 }
 
 /**
