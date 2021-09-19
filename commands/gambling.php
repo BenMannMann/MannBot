@@ -58,18 +58,15 @@ function commandSlots($message_channel, $message_author, $currency, $slot_icons,
 	}
 
 	foreach ($users as $user_record) {
-		// Check to see if the user is jailed
-		if ($user_record->jailed >= Carbon::now()->timestamp) {
-			$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
-			
-			$message_channel->sendMessage($message_builder);
-
-			return;
-		}
-
 		if ($user_record->id == $message_author->user->id) {
-			// If they don't have enough balance, turn them away
-			if ($user_record->balance < 100) {
+			// Check to see if the user is jailed
+			if (!empty($user_record->jailed) && $user_record->jailed >= Carbon::now()->timestamp) {
+				$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
+				
+				$message_channel->sendMessage($message_builder);
+
+				return;
+			} elseif ($user_record->balance < 100) { // If they don't have enough balance, turn them away
 				$message_builder = MessageBuilder::new()->setContent("You don't have enough {$currency} to play the slot machines, scram!");
 
 				$message_channel->sendMessage($message_builder);
@@ -123,16 +120,16 @@ function commandDouble($message_channel, $message_author, $message_content, $cur
 	$users = json_decode(file_get_contents(dirname(__DIR__, 1) . '/users.json'));
 
 	foreach ($users as $user_record) {
-		// Check to see if the user is jailed
-		if ($user_record->jailed >= Carbon::now()->timestamp) {
-			$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
-			
-			$message_channel->sendMessage($message_builder);
-
-			return;
-		}
-
     	if ($user_record->id == $message_author->user->id) {
+			// Check to see if the user is jailed
+			if (!empty($user_record->jailed) && $user_record->jailed >= Carbon::now()->timestamp) {
+				$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
+				
+				$message_channel->sendMessage($message_builder);
+
+				return;
+			}
+
     		if ($amount === 'all') {
 				$amount = $user_record->balance;
     		} else {
@@ -206,35 +203,47 @@ function commandSteal($message_channel, $message_author, $message_content, $curr
 
    	if ($stolen) {
    		foreach ($users as $user_record) {
-   			if ($user_record->jailed >= Carbon::now()->timestamp) {
-				$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
-				
-				$message_channel->sendMessage($message_builder);
+   			if ($user_record->id == $message_author->user->id) {
+				// Check to see if the user is jailed
+				if (!empty($user_record->jailed) && $user_record->jailed >= Carbon::now()->timestamp) {
+					$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
+					
+					$message_channel->sendMessage($message_builder);
 
-				return;
+					return;
+				}
    			}
+
+    		if ($user_record->id == $user_id) {
+    			if ($amount > $user_record->balance) {
+					$message_builder = MessageBuilder::new()->setContent("You cannot steal more than what the user has!");
+
+					$message_channel->sendMessage($message_builder);
+
+					return;
+    			} else {    			
+    				$user_record->balance = $user_record->balance - $amount;
+    			}
+    		}
 
     		if ($user_record->id == $message_author->user->id) {
     			$user_record->balance = $user_record->balance + $amount;
-    		}
-
-    		if ($user_record->id == $user_id) {
-    			$user_record->balance = $user_record->balance - $amount;
     		}
     	}
 
 		$message_builder = MessageBuilder::new()->setContent("{$message_author} tried to steal {$amount} {$currency} from {$user} and succeded! Keep your pockets in check {$user}!");
    	} else {
    		foreach ($users as $user_record) {
-   			if ($user_record->jailed >= Carbon::now()->timestamp) {
-				$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
-				
-				$message_channel->sendMessage($message_builder);
-
-				return;
-   			}
-
     		if ($user_record->id == $message_author->user->id) {
+				// Check to see if the user is jailed
+				if (!empty($user_record->jailed) && $user_record->jailed >= Carbon::now()->timestamp) {
+					$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
+					
+					$message_channel->sendMessage($message_builder);
+
+					return;
+				}
+
     			$fine_amount = ceil(($percentage / 100) * $user_record->balance);
 
     			$user_record->balance = $user_record->balance - $fine_amount;
@@ -489,17 +498,17 @@ function commandGiveMoney($message_channel, $message_author, $message_content, $
 function commandClaimBonus($message_channel, $message_author, $currency) {
     $users = json_decode(file_get_contents(dirname(__DIR__, 1) . '/users.json'));
 
-    foreach ($users as $user_record) {
-		// Check to see if the user is jailed
-		if ($user_record->jailed >= Carbon::now()->timestamp) {
-			$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
-			
-			$message_channel->sendMessage($message_builder);
-
-			return;
-		}
-		
+    foreach ($users as $user_record) {		
     	if ($user_record->id == $message_author->user->id) {
+			// Check to see if the user is jailed
+			if (!empty($user_record->jailed) && $user_record->jailed >= Carbon::now()->timestamp) {
+				$message_builder = MessageBuilder::new()->setContent("{$message_author}, stop right there criminal scum! You are still in jail!");	
+				
+				$message_channel->sendMessage($message_builder);
+
+				return;
+			}
+
 			$last_claimed = Carbon::parse($user_record->daily_bonus);
 			$now = Carbon::now();
 
