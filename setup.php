@@ -165,6 +165,9 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
                 case '!steal':
                     commandSteal($message->channel, $message->author, $message->content, $currency);
                     break;
+                case '!jailtime':
+                    commandJailtime($message->channel, $message->author);
+                    break;
                 case '!leaderboard':
                     commandLeaderboard($message->channel, $currency);
                     break;

@@ -32,6 +32,7 @@ function commandCommands($message_channel, $currency, $bot_image) {
 			!claimbonus -> Receive some {$currency} every 6 hours
 			!givemoney {user} {amount} -> Give another user some of your {$currency}
 			!slotspayout -> Shows how much each you could win from the slots
+			!jailtime -> Check how long you're in jail for
 
 			-- Image Commands --
 			!meme -> Generates a meme

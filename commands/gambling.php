@@ -620,3 +620,30 @@ function commandSlotsPayout($message_channel, $currency, $slot_icons, $slot_winn
 
 	$message_channel->sendMessage($message_builder);
 }
+
+/**
+ * Checks to see how long left a user is in jail for 
+ *
+ * @param string  $message_channel 	Channel to send the message to
+ * @param string  $message_author 	Author of the message
+ */
+function commandJailtime($message_channel, $message_author) {
+    $users = json_decode(file_get_contents(dirname(__DIR__, 1) . '/users.json'));
+
+    $now = Carbon::now()->timestamp;
+
+    echo $now . PHP_EOL;
+
+	foreach ($users as $user_record) {
+		if ($user_record->id == $message_author->user->id) {
+    echo $user_record->jailed . PHP_EOL;
+			if (empty($user_record->jailed) || $user_record->jailed <= $now) {
+				$message_builder = MessageBuilder::new()->setContent("You're free to do whatever you please!");
+			} elseif ($user_record->jailed > $now) {
+				$message_builder = MessageBuilder::new()->setContent("{$message_author}, you're still jailed for " . Carbon::parse($now)->diffForHumans(Carbon::parse($user_record->jailed), true) . '.');
+			}
+		}
+	}
+
+	$message_channel->sendMessage($message_builder);
+}
