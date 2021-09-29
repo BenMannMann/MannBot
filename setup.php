@@ -8,6 +8,7 @@ foreach(glob(__DIR__ . '/commands/*.php') as $filename) {
 }
 
 use Discord\Discord;
+use Discord\Builders\MessageBuilder;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\User\Member;
 use Discord\WebSockets\Intents;
@@ -24,7 +25,7 @@ $discord = new Discord([
 $logger = new Logger('MannBot Logs');
 $logger->pushHandler(new StreamHandler(__DIR__ . '/application.log', Logger::DEBUG));
 
-$discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $levels, $currency, $bot_image, $slot_icons, $slot_winnings) {
+$discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $levels, $currency, $bot_image, $slot_icons, $slot_winnings, $meme_reactions) {
     $logger->info('MannBot Online');
 
     // If no user data exists, generate a new users json file
@@ -128,12 +129,18 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
     // });
 
     // Listen for messages.
-    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($logger, $thoughts_folder, $levels, $currency, $bot_image, $slot_icons, $slot_winnings) {
+    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($logger, $thoughts_folder, $levels, $currency, $bot_image, $slot_icons, $slot_winnings, $meme_reactions) {
         // Add 1xp to the user every time they message
         addXp($message->channel, $message->author, $levels);
 
         // See if a command was called
         $command = strtok(strtolower($message->content), ' ');
+
+        if (str_contains(strtolower($message->content), 'thanks mannbot')) {
+            $message_builder = MessageBuilder::new()->setContent("Thank you, working hard!");
+
+            $message->channel->sendMessage($message_builder);
+        }
 
         if (substr($command, 0, 1) == '!') {
             switch ($command) {
@@ -191,9 +198,9 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
                     break;
 
                 // Images Commands    
-                // case '!meme':
-                //     commandMeme($message->channel, $message);
-                //     break;
+                case '!meme':
+                    commandMeme($message, $meme_reactions);
+                    break;
 
                 // Music Commands
 

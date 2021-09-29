@@ -42,3 +42,14 @@ $slot_winnings = [ // How much each slot icon is worth
 	7 => 850,
 	8 => 1000,
 ];
+
+$meme_reactions = [ // Emoji's that the bot will use when acknowledging a !meme request. 
+	1 => '',
+	2 => '',
+	3 => '',
+	4 => '',
+	5 => '',
+	6 => '',
+	7 => '',
+	8 => '',
+];

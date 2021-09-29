@@ -2,6 +2,7 @@
     "name": "mann/mannbot",
     "require": {
         "team-reflex/discord-php": "dev-develop",
-        "nesbot/carbon": "^2.53"
+        "nesbot/carbon": "^2.53",
+        "intervention/image": "^2.6"
     }
 }

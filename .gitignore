@@ -3,4 +3,6 @@ composer.lock
 keys.php
 application.log
 /storage/thoughts/*
+/storage/meme_generator/source_images/*
+/storage/meme_generator/generated_memes/*
 users.json
