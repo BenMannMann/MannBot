@@ -5,4 +5,5 @@ application.log
 /storage/thoughts/*
 /storage/meme_generator/source_images/*
 /storage/meme_generator/generated_memes/*
+/storage/meme_generator/templates/*
 users.json
