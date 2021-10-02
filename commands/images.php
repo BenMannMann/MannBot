@@ -82,7 +82,6 @@ function commandMeme($message, $meme_reactions) {
 
     // Generate the meme
     foreach ($memes as $meme) {
-
         $meme_image = Image::make($meme['path']);
 
         $meme_image->orientate();
@@ -92,6 +91,7 @@ function commandMeme($message, $meme_reactions) {
             $constraint->upsize();
         });
 
+        // If the template is transparent, layer the meme(s) first so they show through the template
         if ($template_details->layers) {
             $canvas->insert($meme_image, 'top-left', $meme['left'], $meme['top']);
 
