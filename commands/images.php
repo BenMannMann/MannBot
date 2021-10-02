@@ -28,6 +28,8 @@ function commandMeme($message, $meme_reactions) {
 
     $image = Image::make($template);
 
+    $canvas = Image::canvas($image->width(), $image->height(), '#ffffff');
+
     // Grab info of the template from sizes.json
     $sizes = json_decode(file_get_contents(dirname(__DIR__, 1) . '/storage/meme_generator/sizes.json'));
 
@@ -80,6 +82,7 @@ function commandMeme($message, $meme_reactions) {
 
     // Generate the meme
     foreach ($memes as $meme) {
+
         $meme_image = Image::make($meme['path']);
 
         $meme_image->orientate();
@@ -89,12 +92,22 @@ function commandMeme($message, $meme_reactions) {
             $constraint->upsize();
         });
 
-        $image->insert($meme_image, 'top-left', $meme['left'], $meme['top']);
+        if ($template_details->layers) {
+            $canvas->insert($meme_image, 'top-left', $meme['left'], $meme['top']);
+
+            $canvas->insert($image);
+        } else {
+            $image->insert($meme_image, 'top-left', $meme['left'], $meme['top']);
+        }
 
         $meme_name = $meme_name . '-' . $meme['meme_id'];
     }
 
-    $image->save(dirname(__DIR__, 1) . '/storage/meme_generator/generated_memes/' . $meme_name . '.jpg');
+    if ($template_details->layers) {
+        $canvas->save(dirname(__DIR__, 1) . '/storage/meme_generator/generated_memes/' . $meme_name . '.jpg');
+    } else {
+        $image->save(dirname(__DIR__, 1) . '/storage/meme_generator/generated_memes/' . $meme_name . '.jpg');
+    }
 
     // Output the meme
     $message_builder = MessageBuilder::new()->addFile(dirname(__DIR__, 1) . '/storage/meme_generator/generated_memes/' . $meme_name . '.jpg');
