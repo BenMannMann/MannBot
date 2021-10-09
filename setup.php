@@ -133,8 +133,8 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
         // Add 1xp to the user every time they message
         addXp($message->channel, $message->author, $levels);
 
-        // See if a command was called
-        $command = strtok(strtolower($message->content), ' ');
+        // See if the command character was called
+        $is_command = str_contains(strtolower($message->content), '!');
 
         if (str_contains(strtolower($message->content), 'thanks mannbot')) {
             $message_builder = MessageBuilder::new()->setContent("Thank you, working hard!");
@@ -142,7 +142,17 @@ $discord->on('ready', function ($discord) use ($logger, $thoughts_folder, $level
             $message->channel->sendMessage($message_builder);
         }
 
-        if (substr($command, 0, 1) == '!') {
+        if ($is_command) {
+            $command_at_start_or_end = substr(strtolower($message->content), strpos($message->content, "!"));
+
+            $command_in_message = strstr($command_at_start_or_end, ' ', true);
+
+            if (!empty($command_in_message)) {
+                $command = $command_in_message;
+            } else {
+                $command = $command_at_start_or_end;
+            }
+
             switch ($command) {
                 case '!commands':
                     commandCommands($message->channel, $currency, $bot_image);
