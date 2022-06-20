@@ -1,5 +1,6 @@
-# MannBot
-A Discord Bot
+# MannBot v2
+A Discord Bot.
+Originally built in Node.js, MannBot has been rewritten and revamped in PHP!
 
 ## Setup
 ### Create your `keys.php` file
